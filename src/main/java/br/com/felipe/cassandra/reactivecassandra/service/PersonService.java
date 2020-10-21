@@ -14,6 +14,8 @@ import org.springframework.data.cassandra.core.query.Criteria;
 import org.springframework.data.cassandra.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,13 +35,18 @@ public class PersonService {
     public void execute(String[] args) {
 
         List<PersonEntity> persons = new ArrayList<>();
-        System.out.println("Criando pessoas...");
-        for (int i = 0; i < 100000; i++) {
+        int xPessoas = 1000;
+        System.out.println("Criando " + xPessoas + " pessoas...");
+        for (int i = 0; i < xPessoas; i++) {
             persons.add(newPerson("Jon Doe", 40));
         }
         System.out.println("Pessoas criadas...");
-        System.out.println("Inserindo dados...");
+        LocalTime beforeInsert = LocalTime.now();
+        System.out.println("Inserindo dados: " + beforeInsert);
         repository.saveAll(persons);
-        System.out.println("The end.");
+        LocalTime afterInsert = LocalTime.now();
+        System.out.println("Dados inseridos: " + afterInsert);
+        Duration duration = Duration.between(beforeInsert, afterInsert);
+        System.out.println("Tempo decorrido do insert: " + duration.getSeconds() + " segundos");
     }
 }
